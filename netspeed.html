@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Latency Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        input[type="date"] {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <input type="date" id="datePicker">
+    <button onclick="showSelectedDay()">Show Selected Day</button>
+    <button onclick="showLastDay()">Show Last Day</button>
+    <canvas id="latencyChart"></canvas>
+
+    <script>
+        let timestamps = [];
+        let latencies = [];
+        const maxLatency = 300; // Set your maximum latency value
+
+        // Load the CSV data
+        fetch('conn.csv')
+        .then(response => response.text())
+        .then(data => {
+            const lines = data.split('\n');
+
+            // Parse CSV data
+            for (const line of lines) {
+                const [timestamp, latency] = line.split(',');
+                timestamps.push(timestamp);
+                latencies.push(latency === '0' ? maxLatency : parseInt(latency));
+            }
+
+            // Create initial chart
+            createChart(timestamps, latencies);
+        });
+
+        function createChart(labels, data) {
+            const ctx = document.getElementById('latencyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Latency (ms)',
+                        data: data,
+                        backgroundColor: (context) => {
+                            if (context.raw === maxLatency) {
+                                return 'rgba(255, 0, 0, 1)';
+                            } else {
+                                return 'rgba(75, 192, 192, 0.2)';
+                            }
+                        },
+                        borderColor: (context) => {
+                            if (context.raw === maxLatency) {
+                                return 'rgba(255, 0, 0, 1)';
+                            } else {
+                                return 'rgba(75, 192, 192, 1)';
+                            }
+                        },
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Timestamp'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Latency (ms)'
+                            },
+                            beginAtZero: true,
+                            suggestedMax: maxLatency
+                        }
+                    }
+                }
+            });
+        }
+
+        function showSelectedDay() {
+            const selectedDate = new Date(document.getElementById('datePicker').value).toDateString();
+            const selectedTimestamps = [];
+            const selectedLatencies = [];
+
+            for (let i = 0; i < timestamps.length; i++) {
+                if (new Date(timestamps[i]).toDateString() === selectedDate) {
+                    selectedTimestamps.push(timestamps[i]);
+                    selectedLatencies.push(latencies[i]);
+                }
+            }
+
+            createChart(selectedTimestamps, selectedLatencies);
+        }
+
+        function showLastDay() {
+            const lastTimestamp = timestamps[timestamps.length - 1];
+            const lastDate = new Date(lastTimestamp).toDateString();
+            const lastTimestamps = [];
+            const lastLatencies = [];
+
+            for (let i = 0; i < timestamps.length; i++) {
+                if (new Date(timestamps[i]).toDateString() === lastDate) {
+                    lastTimestamps.push(timestamps[i]);
+                    lastLatencies.push(latencies[i]);
+                }
+            }
+
+            createChart(lastTimestamps, lastLatencies);
+        }
+    </script>
+</body>
+</html>
