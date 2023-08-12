@@ -16,7 +16,7 @@ The red bars display failed attempts to ping. (Connection error)
 Login to your server (in my case Raspberry pi).
 #### 1. Get the code
 <code>sudo su</code><br>
-<code>cd></code><br>
+<code>cd</code><br>
 <code>git clone https://github.com/TeaTiMe08/Simple_Internet_Monitor</code><br>
 #### 2. Ensure you have nginx installed and running
 <code>service nginx status</code><br>
