@@ -1,5 +1,11 @@
 # Simple Internet Monitor
 A super small code snippie for measuring your internet availibilty.
+- Ping Test (independent of working DNS server)
+- Simple UI for displaying latency
+- Anger Management Tool for constantly failing network
+
+![A graphical Interface for displaying latency and failed attempts]([http://url/to/img.png](https://github.com/TeaTiMe08/Simple_Internet_Monitor/blob/main/Wow_so_much_fancy_UI_picture_look.png?raw=true))
+The red bars display failed attempts to ping. (Connection error)
 
 ### What you need
 - Some Linux server in your local network
