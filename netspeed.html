@@ -19,6 +19,7 @@
         const maxLatency = 300; // Set your maximum latency value
         let myChart = undefined;
 
+        document.getElementById('datePicker').valueAsDate = new Date();
         // Load the CSV data
         fetch('conn.csv')
         .then(response => response.text())
