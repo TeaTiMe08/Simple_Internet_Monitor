@@ -10,15 +10,14 @@
     </style>
 </head>
 <body>
-    <input type="date" id="datePicker">
-    <button onclick="showSelectedDay()">Show Selected Day</button>
-    <button onclick="showLastDay()">Show Last Day</button>
+    <input onchange="showSelectedDay()" type="date" id="datePicker">
     <canvas id="latencyChart"></canvas>
 
     <script>
         let timestamps = [];
         let latencies = [];
         const maxLatency = 300; // Set your maximum latency value
+        let myChart = undefined;
 
         // Load the CSV data
         fetch('conn.csv')
@@ -34,12 +33,16 @@
             }
 
             // Create initial chart
-            createChart(timestamps, latencies);
+            showSelectedDay();
         });
 
         function createChart(labels, data) {
             const ctx = document.getElementById('latencyChart').getContext('2d');
-            new Chart(ctx, {
+            if (myChart) {
+                myChart.clear();
+                myChart.destroy();
+            }
+            myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
@@ -91,28 +94,12 @@
 
             for (let i = 0; i < timestamps.length; i++) {
                 if (new Date(timestamps[i]).toDateString() === selectedDate) {
-                    selectedTimestamps.push(timestamps[i]);
+                    selectedTimestamps.push(timestamps[i].split(' ')[1]);
                     selectedLatencies.push(latencies[i]);
                 }
             }
 
             createChart(selectedTimestamps, selectedLatencies);
-        }
-
-        function showLastDay() {
-            const lastTimestamp = timestamps[timestamps.length - 1];
-            const lastDate = new Date(lastTimestamp).toDateString();
-            const lastTimestamps = [];
-            const lastLatencies = [];
-
-            for (let i = 0; i < timestamps.length; i++) {
-                if (new Date(timestamps[i]).toDateString() === lastDate) {
-                    lastTimestamps.push(timestamps[i]);
-                    lastLatencies.push(latencies[i]);
-                }
-            }
-
-            createChart(lastTimestamps, lastLatencies);
         }
     </script>
 </body>
